@@ -64,13 +64,11 @@ f = open('innovators.csv', 'w', newline='')
 writer = csv.writer(f)
 writer.writerow(['time', 'acc raw', '', '', '', '', '', 'mag raw', '', '',  '', '', '', 'gyr raw', '', '', \
 		'', '', '', 'orientation fusion', '', '', '', '', '',  'quaternion fusion', '', '', '', '', '', \
-		'', '', 'Sensor on A0'])
+		'', '', 'IR on A0', 'IR on A1', 'IR on A2'])
 
 #write_to_register(bno, BNO055_PAGE_ID_ADDR, 0x01, 'Page ID')
-
 #write_to_register(bno, BNO055_ACC_CONFIG, 0b00011101, 'Acc Config')
 #write_to_register(bno, BNO055_MAG_CONFIG, 0b00000000, 'Mag Config')
-
 #write_to_register(bno, BNO055_PAGE_ID_ADDR, 0x00, 'Page ID')
 
 calibration = False
@@ -101,4 +99,4 @@ while True:
 
 	# Read all data at once and write to scv file
 	all_data = read_raw_data(bno, com_all_data, length=32)
-	writer.writerow([time.time(), *all_data, board.analog[0].read()])
+	writer.writerow([time.time(), *all_data, board.analog[0].read(), board.analog[1].read(), board.analog[2].read()])
