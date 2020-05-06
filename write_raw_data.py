@@ -46,6 +46,7 @@ com_gyr = create_command(BNO055_GYRO_DATA_X_LSB_ADDR, 6)
 com_mag = create_command(BNO055_MAG_DATA_X_LSB_ADDR, 6)
 com_ori = create_command(BNO055_EULER_H_LSB_ADDR, 6)
 com_quat = create_command(BNO055_QUATERNION_DATA_W_LSB_ADDR, 8)
+com_all_data = create_command(BNO055_ACCEL_DATA_X_LSB_ADDR, 32)
 
 
 bno = BNO055.BNO055(serial_port='/dev/ttyAMA0', rst=18)
@@ -53,7 +54,7 @@ bno.begin()#mode=BNO055_MODE_ACCONLY)
 
 f = open('innovators.csv', 'w', newline='')
 writer = csv.writer(f)
-writer.writerow(['time', 'acc raw', '', '', '', '', '', 'gyr raw', '', '',  '', '', '', 'mag raw', '', '', \
+writer.writerow(['time', 'acc raw', '', '', '', '', '', 'mag raw', '', '',  '', '', '', 'gyr raw', '', '', \
 		 '', '', '', 'orientation fusion', '', '', '', '', '',  'quaternion fusion', '', '', '', '', '', '', ''])
 
 #write_to_register(bno, BNO055_PAGE_ID_ADDR, 0x01, 'Page ID')
@@ -73,6 +74,7 @@ while not calibration:
 		calibration = True
 
 while True:
+	# Write data in terminal to verify
 	#acc_x, acc_y, acc_z = bno.read_accelerometer()
 	#gyr_x, gyr_y, gyr_z = bno.read_gyroscope()
     	# Print everything out.
@@ -80,9 +82,15 @@ while True:
 	#print('Acc_x={0:0.2F} Acc_y={1:0.2F} Acc_z={2:0.2F}\t Gyr_x={3:0.2F} Gyr_y={4:0.2F} Gyr_z={5:0.2F}'.format(acc_x, \
 	#	acc_y, acc_z, gyr_x, gyr_y, gyr_z))
 
-	acc_raw = read_raw_data(bno, com_acc)
-	gyr_raw = read_raw_data(bno, com_gyr)
-	mag_raw = read_raw_data(bno, com_mag)
-	ori = read_raw_data(bno, com_ori)
-	quat = read_raw_data(bno, com_quat, length=8)
-	writer.writerow([time.time(), *acc_raw, *gyr_raw, *mag_raw, *ori, *quat])
+	# Read data one by one and write to csv file
+	#acc_raw = read_raw_data(bno, com_acc)
+	#mag_raw = read_raw_data(bno, com_mag)
+	#gyr_raw = read_raw_data(bno, com_gyr)
+	#ori = read_raw_data(bno, com_ori)
+	#quat = read_raw_data(bno, com_quat, length=8)
+	#writer.writerow([time.time(), *acc_raw, *mag_raw, *gyr_raw, *ori, *quat])
+
+	# Read all data at once and write to scv file
+	all_data = read_raw_data(bno, com_all_data, length=32)
+	writer.writerow([time.time(), *all_data])
+
