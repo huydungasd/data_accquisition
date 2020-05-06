@@ -91,6 +91,10 @@ while True:
 	#writer.writerow([time.time(), *acc_raw, *mag_raw, *gyr_raw, *ori, *quat])
 
 	# Read all data at once and write to scv file
-	all_data = read_raw_data(bno, com_all_data, length=32)
-	writer.writerow([time.time(), *all_data])
-
+	#all_data = read_raw_data(bno, com_all_data, length=32)
+	#writer.writerow([time.time(), *all_data])
+	all_data1 = read_raw_data(bno, com_all_data, length=32)
+	t1=time.time()
+	all_data2 = read_raw_data(bno, com_all_data, length=32)
+	t2=time.time()
+	writer.writerows([[t1, *all_data1], [t2, *all_data2]])
