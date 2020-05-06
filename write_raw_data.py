@@ -53,8 +53,8 @@ bno.begin()#mode=BNO055_MODE_ACCONLY)
 
 f = open('innovators.csv', 'w', newline='')
 writer = csv.writer(f)
-writer.writerow(['time', 'acc raw', '', '', 'gyr raw', '', '', 'mag raw', '', '', \
-		'orientation fusion', '', '', 'quaternion fusion', '', '', ''])
+writer.writerow(['time', 'acc raw', '', '', '', '', '', 'gyr raw', '', '',  '', '', '', 'mag raw', '', '', \
+		 '', '', '', 'orientation fusion', '', '', '', '', '',  'quaternion fusion', '', '', '', '', '', '', ''])
 
 #write_to_register(bno, BNO055_PAGE_ID_ADDR, 0x01, 'Page ID')
 
