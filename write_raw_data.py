@@ -56,6 +56,8 @@ print('IR Sensor init...')
 it = util.Iterator(board)
 it.start()
 board.analog[0].enable_reporting()
+board.analog[1].enable_reporting()
+board.analog[2].enable_reporting()
 
 bno = BNO055.BNO055(serial_port='/dev/ttyAMA0', rst=18)
 bno.begin()#mode=BNO055_MODE_ACCONLY)
