@@ -22,9 +22,9 @@ def create_command(address, length):
 	com[3] = length & 0xFF
 	return com
 
-def read_raw_data(bno, command):
+def read_raw_data(bno, command, length=6):
 	resp = bno._serial_send(command)
-	resp = bytearray(bno._serial.read(6))
+	resp = bytearray(bno._serial.read(length))
 	return resp
 
 BNO055_PAGE_ID_ADDR = 0x07
@@ -84,5 +84,5 @@ while True:
 	gyr_raw = read_raw_data(bno, com_gyr)
 	mag_raw = read_raw_data(bno, com_mag)
 	ori = read_raw_data(bno, com_ori)
-	quat = read_raw_data(bno, com_quat)
+	quat = read_raw_data(bno, com_quat, length=8)
 	writer.writerow([time.time(), *acc_raw, *gyr_raw, *mag_raw, *ori, *quat])
