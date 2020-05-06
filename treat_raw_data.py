@@ -15,12 +15,17 @@ def data_transform(data, sensibility):
         data_list.append(data_trans)
     return pd.concat(data_list, axis=1)
 
+def IRread_to_cm(data):
+    return (data * 5) ** -1.173 * 29.998
+
 time = df.iloc[:, 0]
 acc_raw = df.iloc[:, 1:7]
 mag_raw = df.iloc[:, 7:13]
 gyr_raw = df.iloc[:, 13:19]
 ori_raw = df.iloc[:, 19:25]
-quat_raw = df.iloc[:, 25:]
+quat_raw = df.iloc[:, 25:33]
+sensor_IR = df.iloc[:, 33:36]
+
 
 print('Average frequency: {0:.2f} Hz'.format((time.size - 1) / (time.iloc[-1] - time.iloc[0])))
 
@@ -34,6 +39,8 @@ ori = data_transform(ori_raw, 16)
 ori.columns = ['ori_x', 'ori_y', 'ori_z']
 quat = data_transform(quat_raw, 2**14)
 quat.columns = ['q', 'p1', 'p2', 'p3']
+IR = IRread_to_cm(sensor_IR)
+IR.columns = ['A0', 'A1', 'A2']
 
-data = pd.concat([time, acc, mag, gyr, ori, quat], axis=1)
+data = pd.concat([time, acc, mag, gyr, ori, quat, IR], axis=1)
 data.to_csv('./data_transfomed.csv', index=False)
