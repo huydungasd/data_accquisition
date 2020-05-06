@@ -4,7 +4,9 @@ import time
 import csv
 import os
 
+from pyfirmata import Arduino, util
 from Adafruit_BNO055 import BNO055
+
 
 def write_to_register(bno, address, value, id_text):
 	bno._config_mode()
@@ -49,13 +51,20 @@ com_quat = create_command(BNO055_QUATERNION_DATA_W_LSB_ADDR, 8)
 com_all_data = create_command(BNO055_ACCEL_DATA_X_LSB_ADDR, 32)
 
 
+board = Arduino('/dev/ttyACM0')
+print('IR Sensor init...')
+it = util.Iterator(board)
+it.start()
+board.analog[0].enable_reporting()
+
 bno = BNO055.BNO055(serial_port='/dev/ttyAMA0', rst=18)
 bno.begin()#mode=BNO055_MODE_ACCONLY)
 
 f = open('innovators.csv', 'w', newline='')
 writer = csv.writer(f)
 writer.writerow(['time', 'acc raw', '', '', '', '', '', 'mag raw', '', '',  '', '', '', 'gyr raw', '', '', \
-		 '', '', '', 'orientation fusion', '', '', '', '', '',  'quaternion fusion', '', '', '', '', '', '', ''])
+		'', '', '', 'orientation fusion', '', '', '', '', '',  'quaternion fusion', '', '', '', '', '', \
+		'', '', 'Sensor on A0'])
 
 #write_to_register(bno, BNO055_PAGE_ID_ADDR, 0x01, 'Page ID')
 
@@ -91,16 +100,5 @@ while True:
 	#writer.writerow([time.time(), *acc_raw, *mag_raw, *gyr_raw, *ori, *quat])
 
 	# Read all data at once and write to scv file
-	#all_data = read_raw_data(bno, com_all_data, length=32)
-	#writer.writerow([time.time(), *all_data])
-	all_data1 = read_raw_data(bno, com_all_data, length=32)
-	t1=time.time()
-	all_data2 = read_raw_data(bno, com_all_data, length=32)
-	t2=time.time()
-	all_data3 = read_raw_data(bno, com_all_data, length=32)
-	t3=time.time()
-	all_data4 = read_raw_data(bno, com_all_data, length=32)
-	t4=time.time()
-	all_data5 = read_raw_data(bno, com_all_data, length=32)
-	t5=time.time()
-	writer.writerows([[t1, *all_data1], [t2, *all_data2], [t3, *all_data3], [t4, *all_data4], [t5, *all_data5]])
+	all_data = read_raw_data(bno, com_all_data, length=32)
+	writer.writerow([time.time(), *all_data, board.analog[0].read()])
