@@ -61,5 +61,5 @@ def data_transform(data, sensibility):
         data_list.append(data_trans)
     return pd.concat(data_list, axis=1)
 
-def IRread_to_cm(data):
+def irread_to_cm(data):
     return (data * 5) ** -1.173 * 29.998
