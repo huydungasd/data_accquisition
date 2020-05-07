@@ -16,7 +16,9 @@ board.analog[2].enable_reporting()
 bno = BNO055.BNO055(serial_port='/dev/ttyAMA0', rst=18)
 bno.begin()#mode=BNO055_MODE_ACCONLY)
 
-f = open('innovators.csv', 'w', newline='')
+raw_dir = './raw_data/'
+n_files = len([name for name in os.listdir(raw_dir) if os.path.isfile(raw_dir + name)])
+f = open(f'./raw_data/{n_files}.csv', 'w', newline='')
 writer = csv.writer(f)
 writer.writerow(['time', 'acc raw', '', '', '', '', '', 'mag raw', '', '',  '', '', '', 'gyr raw', '', '', \
 		'', '', '', 'orientation fusion', '', '', '', '', '',  'quaternion fusion', '', '', '', '', '', \
