@@ -57,4 +57,5 @@ def data_transform(data, sensibility):
     return pd.concat(data_list, axis=1)
 
 def irread_to_cm(data):
-    return (data * 5) ** -1.173 * 29.998
+	# Source: https://www.upgradeindustries.com/product/58/Sharp-10-80cm-Infrared-Distance-Sensor-(GP2Y0A21YK0F)
+    return (data * 5) ** 1.15 * 27.86
