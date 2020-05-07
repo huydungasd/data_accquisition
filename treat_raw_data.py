@@ -3,6 +3,7 @@ import csv
 from utils import *
 
 
+raw_dir = './raw_data/'
 raw_files = [name for name in os.listdir(raw_dir) if os.path.isfile(raw_dir + name)]
 for name in raw_files:
     filepath = f'./raw_data/{name}'
