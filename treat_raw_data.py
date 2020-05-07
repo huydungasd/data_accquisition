@@ -1,4 +1,7 @@
+import csv
+
 from utils import *
+
 
 filepath = './innovators.csv'
 df = pd.read_csv(filepath)

@@ -1,13 +1,8 @@
-import csv
 import pandas as pd
 import logging
 import sys
 import time
-import csv
 import os
-
-from pyfirmata import Arduino, util
-from Adafruit_BNO055 import BNO055
 
 
 BNO055_PAGE_ID_ADDR = 0x07

@@ -1,4 +1,6 @@
 from utils import *
+from pyfirmata import Arduino, util
+from Adafruit_BNO055 import BNO055
 
 
 com_all_data = create_command(BNO055_ACCEL_DATA_X_LSB_ADDR, 32)
