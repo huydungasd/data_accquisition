@@ -1,4 +1,5 @@
 import csv
+import numpy as np
 
 from utils import *
 from pyfirmata import Arduino, util
@@ -44,6 +45,14 @@ while not calibration:
 		calibration = True
 
 while True:
+	l0 = np.zeros(5)
+	l1 = np.zeros(5)
+	l2 = np.zeros(5)
+	for i in range(5):
+		l0[i] = board.analog[0].read()
+		l1[i] = board.analog[1].read()
+		l2[i] = board.analog[2].read()
+
 	# Read all data at once and write to scv file
 	all_data = read_raw_data(bno, com_all_data, length=32)
-	writer.writerow([time.time(), *all_data, board.analog[0].read(), board.analog[1].read(), board.analog[2].read()])
+	writer.writerow([time.time(), *all_data, np.median(l0), np.median(l1), np.median(l2)])
