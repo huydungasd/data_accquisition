@@ -21,8 +21,8 @@ bno.begin()#mode=BNO055_MODE_ACCONLY)
 raw_dir = './raw_data/'
 n_files = len([name for name in os.listdir(raw_dir) if os.path.isfile(raw_dir + name)])
 if n_files > 0:
-	if os.stat(f'./raw_data/{n_files}.csv').st_size == 0:
-			n_files -= 1
+	if os.stat(f'./raw_data/{n_files - 1}.csv').st_size == 0:
+		n_files -= 1
 f = open(f'./raw_data/{n_files}.csv', 'w', newline='')
 writer = csv.writer(f)
 writer.writerow(['time', 'acc raw', '', '', '', '', '', 'mag raw', '', '',  '', '', '', 'gyr raw', '', '', \
