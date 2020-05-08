@@ -9,8 +9,8 @@ from Adafruit_BNO055 import BNO055
 
 def main():
 	parser = argparse.ArgumentParser()
-    parser.add_argument('output', type=int, help='Output name')
-    args = parser.parse_args()
+	parser.add_argument('output', type=int, help='Output name')
+	args = parser.parse_args()
 
 	board = Arduino('/dev/ttyACM0')
 	print('IR Sensor init...')
