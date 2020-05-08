@@ -1,6 +1,7 @@
+import os
 import csv
 
-from utils import *
+from utils.data_processing import *
 
 
 raw_dir = './raw_data/'

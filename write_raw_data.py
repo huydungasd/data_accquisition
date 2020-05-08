@@ -1,7 +1,7 @@
 import csv
 import numpy as np
 
-from utils import *
+from utils.data_acq import *
 from pyfirmata import Arduino, util
 from Adafruit_BNO055 import BNO055
 
