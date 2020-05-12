@@ -28,7 +28,7 @@ for name in raw_files:
     gyr = data_transform(gyr_raw, 16)
     gyr.columns = ['gyr_x', 'gyr_y', 'gyr_z']
     ori = data_transform(ori_raw, 16)
-    ori.columns = ['ori_x', 'ori_y', 'ori_z']
+    ori.columns = ['ori_z', 'ori_y', 'ori_x']
     quat = data_transform(quat_raw, 2**14)
     quat.columns = ['q', 'p1', 'p2', 'p3']
     ir = irread_to_cm(sensor_ir)

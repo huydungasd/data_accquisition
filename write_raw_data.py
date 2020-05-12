@@ -9,7 +9,7 @@ from Adafruit_BNO055 import BNO055
 
 def main():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('output', type=int, help='Output name')
+	parser.add_argument('f_output', type=int, help='First output name')
 	args = parser.parse_args()
 
 	board = Arduino('/dev/ttyACM0')
@@ -24,13 +24,7 @@ def main():
 	bno.begin()#mode=BNO055_MODE_ACCONLY)
 
 	com_all_data = create_command(BNO055_ACCEL_DATA_X_LSB_ADDR, 32)
-
-	f = open(f'./raw_data/{args.output}.csv', 'w', newline='')
-	writer = csv.writer(f)
-	writer.writerow(['time', 'acc raw', '', '', '', '', '', 'mag raw', '', '',  '', '', '', 'gyr raw', '', '', \
-			'', '', '', 'orientation fusion', '', '', '', '', '',  'quaternion fusion', '', '', '', '', '', \
-			'', '', 'IR on A0', 'IR on A1', 'IR on A2'])
-
+	
 	#write_to_register(bno, BNO055_PAGE_ID_ADDR, 0x01, 'Page ID')
 	#write_to_register(bno, BNO055_ACC_CONFIG, 0b00011101, 'Acc Config')
 	#write_to_register(bno, BNO055_MAG_CONFIG, 0b00000000, 'Mag Config')
@@ -45,10 +39,36 @@ def main():
 			print('Writing .csv file...')
 			calibration = True
 
+	filename = args.f_output
+	f, writer = init_data_file(filename)
 	while True:
-		# Read all data at once and write to scv file
-		all_data = read_raw_data(bno, com_all_data, length=32)
-		writer.writerow([time.time(), *all_data, board.analog[0].read(), board.analog[1].read(), board.analog[2].read()])
+		try:
+			# Read all data at once and write to scv file
+			all_data = read_raw_data(bno, com_all_data, length=32)
+			writer.writerow([time.time(), *all_data, board.analog[0].read(), board.analog[1].read(), board.analog[2].read()])
+		except KeyboardInterrupt:
+			while True:
+				q = input("\nCTRL-C was pressed what would you like to do:\n\
+							\t(1) Remake the measurement\n\
+							\t(2) Start a new measurement\n\
+							\t(3) Check calibration\n\
+							\t(4) Quit")
+				if q == "3":
+					for _ in range(5):
+						sys, gyro, accel, mag = bno.get_calibration_status()
+						print('Sys_cal={0} Gyro_cal={1} Accel_cal={2} Mag_cal={3}'.format(sys, gyro, accel, mag))
+				if q == "1" or q == "2" or q == "4":
+					break
+			if q == "1":
+				f.close()
+				f, writer = init_data_file(filename)
+			elif q == "2":
+				f.close()
+				filename += 1
+				f, writer = init_data_file(filename)
+			elif q == "4":
+				exit()
+
 
 if __name__ == '__main__':
     main()

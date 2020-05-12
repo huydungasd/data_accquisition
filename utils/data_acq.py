@@ -2,6 +2,7 @@ import logging
 import sys
 import time
 import os
+import csv
 
 
 BNO055_PAGE_ID_ADDR = 0x07
@@ -43,3 +44,11 @@ def read_raw_data(bno, command, length=6):
 	resp = bno._serial_send(command)
 	resp = bytearray(bno._serial.read(length))
 	return resp
+
+def init_data_file(filename):
+	f = open(f'./raw_data/{filename}.csv', 'w', newline='')
+	writer = csv.writer(f)
+	writer.writerow(['time', 'acc raw', '', '', '', '', '', 'mag raw', '', '',  '', '', '', 'gyr raw', '', '', \
+			'', '', '', 'orientation fusion', '', '', '', '', '',  'quaternion fusion', '', '', '', '', '', \
+			'', '', 'IR on A0', 'IR on A1', 'IR on A2'])
+	return f, writer
