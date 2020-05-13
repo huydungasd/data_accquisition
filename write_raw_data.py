@@ -48,11 +48,12 @@ def main():
 			writer.writerow([time.time(), *all_data, board.analog[0].read(), board.analog[1].read(), board.analog[2].read()])
 		except KeyboardInterrupt:
 			while True:
+				os.system('clear')
 				q = input("\nCTRL-C was pressed what would you like to do:\n\
 							\t(1) Remake the measurement\n\
 							\t(2) Start a new measurement\n\
 							\t(3) Check calibration\n\
-							\t(4) Quit")
+							\t(4) Quit\n")
 				if q == "3":
 					for _ in range(5):
 						sys, gyro, accel, mag = bno.get_calibration_status()
