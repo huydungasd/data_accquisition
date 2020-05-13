@@ -42,7 +42,8 @@ def main():
 			calibration = True
 
 	filename = args.f_output
-	f, writer = init_data_file(filename, args.data_num)
+	data_num = args.data_num
+	f, writer = init_data_file(filename, data_num)
 	while True:
 		try:
 			# Read all data at once and write to scv file
@@ -66,12 +67,12 @@ def main():
 			if q == "1":
 				f.close()
 				print(f'Rewriting file {filename}...')
-				f, writer = init_data_file(filename)
+				f, writer = init_data_file(filename, data_num)
 			elif q == "2":
 				f.close()
 				filename += 1
 				print(f'Start writing file {filename}...')
-				f, writer = init_data_file(filename)
+				f, writer = init_data_file(filename, data_num)
 			elif q == "4":
 				exit()
 
