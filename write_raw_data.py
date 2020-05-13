@@ -10,8 +10,8 @@ from Adafruit_BNO055 import BNO055
 
 def main():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('data_num', type=int, help='Data folder')
-	parser.add_argument('f_output', type=int, help='First output name')
+	parser.add_argument('--data_num', type=int, help='Data folder')
+	parser.add_argument('--f_output', type=int, help='First output name')
 	args = parser.parse_args()
 
 	board = Arduino('/dev/ttyACM0')
