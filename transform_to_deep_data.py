@@ -4,11 +4,12 @@ import csv
 from utils.data_processing import *
 
 
-data_dir = './transformed_data/'
+data_num = 1
+data_dir = f'./transformed_data/data{data_num}/'
 data_files = [name for name in os.listdir(data_dir) if os.path.isfile(data_dir + name)]
 for name in data_files:
     # print(name)
-    filepath = f'./transformed_data/{name}'
+    filepath = data_dir + f'{name}'
     df = pd.read_csv(filepath)
     # df = create_imu_data_deep(filepath)
 
@@ -19,7 +20,7 @@ for name in data_files:
     ir_A1 = df.iloc[:, 18]
     ir_A2 = df.iloc[:, 19]
 
-    thressholdA2 = 20 # We says the sensor see something if the returned value is less than 20cm
+    thressholdA2 = 21 # We says the sensor see something if the returned value is less than 20cm
     thressholdA1 = 22
     thressholdA0 = 26
     # Make sure the initial position of Rasp is captured by the IR connected to Arduino's A2 port
@@ -79,5 +80,5 @@ for name in data_files:
                                     t0=time.iloc[i_depart], t1=time.iloc[i_mid], t2=time.iloc[i_final])
 
     data = pd.concat([time, x, y, z, quat_data], axis=1)
-    data.to_csv(f'./data_deep/data1/gt/{name}', index=False)
-    sensor_data.to_csv(f'./data_deep/data1/imu/{name}', index=False)
+    data.to_csv(f'./data_deep/data{data_num}/gt/{name}', index=False)
+    sensor_data.to_csv(f'./data_deep/data{data_num}/imu/{name}', index=False)

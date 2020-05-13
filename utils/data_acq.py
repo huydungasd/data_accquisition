@@ -45,8 +45,8 @@ def read_raw_data(bno, command, length=6):
 	resp = bytearray(bno._serial.read(length))
 	return resp
 
-def init_data_file(filename):
-	f = open(f'./raw_data/{filename}.csv', 'w', newline='')
+def init_data_file(filename, data_num):
+	f = open(f'./raw_data/data{data_num}/{filename}.csv', 'w', newline='')
 	writer = csv.writer(f)
 	writer.writerow(['time', 'acc raw', '', '', '', '', '', 'mag raw', '', '',  '', '', '', 'gyr raw', '', '', \
 			'', '', '', 'orientation fusion', '', '', '', '', '',  'quaternion fusion', '', '', '', '', '', \

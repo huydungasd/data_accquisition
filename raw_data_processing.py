@@ -4,10 +4,11 @@ import csv
 from utils.data_processing import *
 
 
-raw_dir = './raw_data/'
+data_num = 1
+raw_dir = f'./raw_data/data{data_num}/'
 raw_files = [name for name in os.listdir(raw_dir) if os.path.isfile(raw_dir + name)]
 for name in raw_files:
-    filepath = f'./raw_data/{name}'
+    filepath = raw_dir + f'{name}'
     df = pd.read_csv(filepath)
 
     time = df.iloc[:, 0]
@@ -35,4 +36,4 @@ for name in raw_files:
     ir.columns = ['A0', 'A1', 'A2']
 
     data = pd.concat([time, acc, mag, gyr, ori, quat, ir], axis=1)
-    data.to_csv(f'./transformed_data/{name}', index=False)
+    data.to_csv(f'./transformed_data/data{data_num}/{name}', index=False)

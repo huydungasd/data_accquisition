@@ -10,6 +10,7 @@ from Adafruit_BNO055 import BNO055
 
 def main():
 	parser = argparse.ArgumentParser()
+	parser.add_argument('data_num', type=int, help='Data folder')
 	parser.add_argument('f_output', type=int, help='First output name')
 	args = parser.parse_args()
 
@@ -41,7 +42,7 @@ def main():
 			calibration = True
 
 	filename = args.f_output
-	f, writer = init_data_file(filename)
+	f, writer = init_data_file(filename, args.data_num)
 	while True:
 		try:
 			# Read all data at once and write to scv file
