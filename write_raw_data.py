@@ -1,6 +1,7 @@
 import csv
 import numpy as np
 import argparse
+import time
 
 from utils.data_acq import *
 from pyfirmata import Arduino, util
@@ -55,17 +56,20 @@ def main():
 							\t(3) Check calibration\n\
 							\t(4) Quit\n")
 				if q == "3":
-					for _ in range(5):
+					for _ in range(10):
 						sys, gyro, accel, mag = bno.get_calibration_status()
 						print('Sys_cal={0} Gyro_cal={1} Accel_cal={2} Mag_cal={3}'.format(sys, gyro, accel, mag))
+					time.sleep(2)
 				if q == "1" or q == "2" or q == "4":
 					break
 			if q == "1":
 				f.close()
+				print(f'Rewriting file {filename}...')
 				f, writer = init_data_file(filename)
 			elif q == "2":
 				f.close()
 				filename += 1
+				print(f'Start writing file {filename}...')
 				f, writer = init_data_file(filename)
 			elif q == "4":
 				exit()
