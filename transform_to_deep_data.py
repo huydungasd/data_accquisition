@@ -9,8 +9,8 @@ data_files = [name for name in os.listdir(data_dir) if os.path.isfile(data_dir +
 for name in data_files:
     # print(name)
     filepath = f'./transformed_data/{name}'
-    # df = pd.read_csv(filepath)
-    df = create_imu_data_deep(filepath)
+    df = pd.read_csv(filepath)
+    # df = create_imu_data_deep(filepath)
 
     time = df.iloc[:, 0]
     quat_data = df.iloc[:, 13:17]
@@ -19,54 +19,61 @@ for name in data_files:
     ir_A1 = df.iloc[:, 18]
     ir_A2 = df.iloc[:, 19]
 
-    thresshold = 23 # We says the sensor see something if the returned value is less than 22cm
+    thressholdA2 = 20 # We says the sensor see something if the returned value is less than 20cm
+    thressholdA1 = 22
+    thressholdA0 = 26
     # Make sure the initial position of Rasp is captured by the IR connected to Arduino's A2 port
     for i in range(10):
-        if ir_A2.iloc[i] >= thresshold:
+        if ir_A2.iloc[i] >= thressholdA2:
             print(f"Error in file {name} - Initial position error")
-            assert ir_A2.iloc[i] < thresshold
+            assert ir_A2.iloc[i] < thressholdA2
+        if ir_A0.iloc[time.size - 1 - i] >= thressholdA0:
+            print(f"Error in file {name} - Final position error")
+            assert ir_A0.iloc[time.size - 1 - i] < thressholdA0
     
     # Departure instance
     i_depart = 10
-    while ir_A2.iloc[i_depart] < thresshold:
+    while ir_A2.iloc[i_depart] < thressholdA2:
         i_depart += 1
+    i_depart -= 1
     # Initial distance
     initial_distance = ir_A2.iloc[:i_depart].mean()
     for i in range(1, 6):
-        if ir_A2.iloc[i_depart + i] < thresshold and abs(initial_distance - ir_A2.iloc[i_depart + i]) < 2:
+        if ir_A2.iloc[i_depart + i] < thressholdA2 and abs(initial_distance - ir_A2.iloc[i_depart + i]) < 2:
             print(f"Error: Review the file {name} - Data of IR A2 line {i_depart + i + 2}")
     
     # Arriving instance
     i_final = time.size - 1
-    while ir_A0.iloc[i_final] < thresshold:
+    while ir_A0.iloc[i_final] < thressholdA0:
         i_final -= 1
+    i_final += 1
     # Final distance
     final_distance = ir_A0.iloc[i_final:].mean()
     for i in range(1, 6):
-        if ir_A0.iloc[i_final - i] < thresshold and abs(final_distance - ir_A0.iloc[i_final - i]) < 2:
+        if ir_A0.iloc[i_final - i] < thressholdA0 and abs(final_distance - ir_A0.iloc[i_final - i]) < 2:
             print(f"Error: Review the file {name} - Data of IR A0 line {i_final - i + 2}")
     
     # Middle instance
     i_mid_1 = i_depart
-    while ir_A1.iloc[i_mid_1] > thresshold:
+    while ir_A1.iloc[i_mid_1] > thressholdA1:
         i_mid_1 += 1
     i_mid_2 = i_final
-    while ir_A1.iloc[i_mid_2] > thresshold:
+    while ir_A1.iloc[i_mid_2] > thressholdA1:
         i_mid_2 -= 1
-    list_tmp = []
-    list_ind = []
+    list_idx_begin = []
+    list_idx_end = []
     for i in range(i_mid_1, i_mid_2 + 1):
-        if ir_A1.iloc[i] < thresshold:
-            list_tmp.append(i)
-        else:
-            if len(list_tmp) > len(list_ind):
-                list_ind = [*list_tmp]
-                list_tmp = []
-            print(f"Warning: Review the file {name} - Data of IR A1 line {i + 2}")
-        if i == i_mid_2 and len(list_ind) == 0:
-            list_ind = [*list_tmp]
-    print(f'{name} A1 range: {list_ind[0] + 2} - {list_ind[-1] + 2}')
-    i_mid = int((list_ind[0] + list_ind[-1])/2)
+        if (i == i_mid_1) or ((ir_A1.iloc[i] < thressholdA1) and (ir_A1.iloc[i-1] > thressholdA1)):
+            list_idx_begin.append(i)
+        if (i == i_mid_2) or ((ir_A1.iloc[i] < thressholdA1) and (ir_A1.iloc[i+1] > thressholdA1)):
+            list_idx_end.append(i)
+    diff = [list_idx_end[i] - list_idx_begin[i] for i in range(len(list_idx_begin))]
+    n = sum(diff[i] > 5 for i in range(len(diff)))
+    assert n == 1
+    indices = [i for i, x in enumerate(diff) if x == max(diff)] 
+    print(f'{name} Beginning Midle Ending range: 1-{i_depart + 2}; {list_idx_begin[indices[0]] + 2}-{list_idx_end[indices[0]] + 2}; {i_final + 2}-f')
+    
+    i_mid = int((list_idx_end[indices[0]] + list_idx_begin[indices[0]])/2)
 
     x, y, z = position_calulation( time, i_depart, i_final, h=60, l=140, a0=initial_distance, b0=final_distance, \
                                     t0=time.iloc[i_depart], t1=time.iloc[i_mid], t2=time.iloc[i_final])
