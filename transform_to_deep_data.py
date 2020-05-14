@@ -4,7 +4,8 @@ import csv
 from utils.data_processing import *
 
 
-data_num = 1
+data_num = 2
+print(f'Making data{data_num}')
 data_dir = f'./transformed_data/data{data_num}/'
 data_files = [name for name in os.listdir(data_dir) if os.path.isfile(data_dir + name)]
 for name in data_files:
@@ -76,7 +77,7 @@ for name in data_files:
     
     i_mid = int((list_idx_end[indices[0]] + list_idx_begin[indices[0]])/2)
 
-    x, y, z = position_calulation( time, i_depart, i_final, h=60, l=140, a0=initial_distance, b0=final_distance, \
+    x, y, z = position_calulation( time, i_depart, i_final, h=54, l=140, a0=initial_distance, b0=final_distance, \
                                     t0=time.iloc[i_depart], t1=time.iloc[i_mid], t2=time.iloc[i_final])
 
     data = pd.concat([time, x, y, z, quat_data], axis=1)
