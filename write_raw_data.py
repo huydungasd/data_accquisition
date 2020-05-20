@@ -1,3 +1,6 @@
+'''
+	Link to library BNO055: https://github.com/adafruit/Adafruit_Python_BNO055.git
+'''
 import csv
 import numpy as np
 import argparse
