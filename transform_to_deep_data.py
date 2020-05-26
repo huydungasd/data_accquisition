@@ -4,15 +4,15 @@ import csv
 from utils.data_processing import *
 
 
-data_num = 3
+data_num = 5
 print(f'Making data{data_num}')
 data_dir = f'./transformed_data/data{data_num}/'
 data_files = [name for name in os.listdir(data_dir) if os.path.isfile(data_dir + name)]
 for name in data_files:
     # print(name)
     filepath = data_dir + f'{name}'
-    df = pd.read_csv(filepath)
-    # df = create_imu_data_deep(filepath)
+    # df = pd.read_csv(filepath)
+    df = create_imu_data_deep(filepath)
 
     time = df.iloc[:, 0]
     quat_data = df.iloc[:, 13:17]
@@ -70,7 +70,9 @@ for name in data_files:
         if (i == i_mid_2) or ((ir_A1.iloc[i] < thressholdA1) and (ir_A1.iloc[i+1] > thressholdA1)):
             list_idx_end.append(i)
     diff = [list_idx_end[i] - list_idx_begin[i] for i in range(len(list_idx_begin))]
-    n = sum(diff[i] > 5 for i in range(len(diff)))
+    n = sum(diff[i] > 4 for i in range(len(diff)))
+    if n > 1:
+        print(name)
     assert n == 1
     indices = [i for i, x in enumerate(diff) if x == max(diff)] 
     print(f'{name} Beginning Midle Ending range: 1-{i_depart + 2}; {list_idx_begin[indices[0]] + 2}-{list_idx_end[indices[0]] + 2}; {i_final + 2}-f')

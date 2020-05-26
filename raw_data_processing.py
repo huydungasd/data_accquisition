@@ -4,7 +4,7 @@ import csv
 from utils.data_processing import *
 
 
-data_num = 3
+data_num = 6
 print(f'Making data{data_num}')
 raw_dir = f'./raw_data/data{data_num}/'
 raw_files = [name for name in os.listdir(raw_dir) if os.path.isfile(raw_dir + name)]
