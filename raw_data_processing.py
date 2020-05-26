@@ -4,13 +4,15 @@ import csv
 from utils.data_processing import *
 
 
-data_num = 6
+data_num = 7
 print(f'Making data{data_num}')
 raw_dir = f'./raw_data/data{data_num}/'
 raw_files = [name for name in os.listdir(raw_dir) if os.path.isfile(raw_dir + name)]
 for name in raw_files:
     filepath = raw_dir + f'{name}'
     df = pd.read_csv(filepath)
+    df_data = df.iloc[:, 1:]
+    df = df[~df_data.duplicated(keep='first')]
 
     time = df.iloc[:, 0]
     acc_raw = df.iloc[:, 1:7]
