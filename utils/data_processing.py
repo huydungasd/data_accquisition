@@ -14,9 +14,9 @@ def data_transform(data, sensibility):
         data_list.append(data_trans)
     return pd.concat(data_list, axis=1)
 
-def irread_to_cm(data):
+def irread_to_m(data):
 	# Source: https://www.upgradeindustries.com/product/58/Sharp-10-80cm-Infrared-Distance-Sensor-(GP2Y0A21YK0F)
-    return (data * 5) ** -1.15 * 27.86
+    return (data * 5) ** -1.15 * 27.86 / 100
 
 def interpolate_3dvector_linear(input, input_timestamp, output_timestamp):
     assert input.shape[0] == input_timestamp.shape[0]
