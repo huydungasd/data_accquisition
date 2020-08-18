@@ -5,7 +5,7 @@ import shutil
 from utils.data_processing import *
 
 
-for data_num in range(1, 9):
+for data_num in range(10, 11):
     print(f'Making data{data_num}')
     raw_dir = f'./raw_data/data{data_num}/'
     raw_files = [name for name in os.listdir(raw_dir) if os.path.isfile(raw_dir + name)]
@@ -17,8 +17,8 @@ for data_num in range(1, 9):
     for name in raw_files:
         filepath = raw_dir + f'{name}'
         df = pd.read_csv(filepath)
-        df_data = df.iloc[:, 1:]
-        df = df[~df_data.duplicated(keep='first')]
+        # df_data = df.iloc[:, 1:]
+        # df = df[~df_data.duplicated(keep='first')]
 
         time = df.iloc[:, 0]
         acc_raw = df.iloc[:, 1:7]

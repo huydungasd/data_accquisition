@@ -5,18 +5,19 @@ import shutil
 from utils.data_processing import *
 
 
-for data_num in range(1, 9):
-    if data_num != 6:
-        print(f'Making data{data_num}')
-        data_dir = f'./transformed_data/data{data_num}/'
-        data_files = [name for name in os.listdir(data_dir) if os.path.isfile(data_dir + name)]
-        try:
-            shutil.rmtree(f'./data_deep/data{data_num}')
-            os.mkdir(f'./data_deep/data{data_num}')
-            os.mkdir(f'./data_deep/data{data_num}/gt')
-            os.mkdir(f'./data_deep/data{data_num}/imu')
-        except FileNotFoundError:
-            pass
+for data_num in range(10, 11):
+    print(f'Making data{data_num}')
+    data_dir = f'./transformed_data/data{data_num}/'
+    data_files = [name for name in os.listdir(data_dir) if os.path.isfile(data_dir + name)]
+    try:
+        shutil.rmtree(f'./data_deep/data{data_num}')
+        os.mkdir(f'./data_deep/data{data_num}')
+        os.mkdir(f'./data_deep/data{data_num}/gt')
+        os.mkdir(f'./data_deep/data{data_num}/imu')
+    except FileNotFoundError:
+        pass
+
+    if data_num != 6 and data_num != 10:    
         for name in data_files:
             # print(name)
             filepath = data_dir + f'{name}'
@@ -90,6 +91,35 @@ for data_num in range(1, 9):
 
             x, y, z = position_calulation( time, i_depart, i_final, h=0.56, l=1.40, a0=initial_distance, b0=final_distance, \
                                             t0=time.iloc[i_depart], t1=time.iloc[i_mid], t2=time.iloc[i_final])
+                            
+            data = pd.concat([time, x, y, z, quat_data], axis=1)
+            data.to_csv(f'./data_deep/data{data_num}/gt/{name}', index=False)
+            sensor_data.to_csv(f'./data_deep/data{data_num}/imu/{name}', index=False)
+    else:
+        for name in data_files:
+            # print(name)
+            filepath = data_dir + f'{name}'
+            # df = pd.read_csv(filepath)
+            df = create_imu_data_deep(filepath)
+
+            time = df.iloc[:, 0]
+            quat_data = df.iloc[:, 13:17]
+            sensor_data = df.iloc[:, :10]
+            
+            # Departure instance
+            i_depart = 0
+            # Initial distance
+            initial_distance = 0
+            
+            # Arriving instance
+            i_final = time.size - 1
+            # Final distance
+            final_distance = 0
+            
+            # Middle instance
+            i_mid = (i_depart + i_final) // 2
+
+            x, y, z = time*0, time*0, (time*0 + df.iloc[:, 19])*20*np.pi
 
             data = pd.concat([time, x, y, z, quat_data], axis=1)
             data.to_csv(f'./data_deep/data{data_num}/gt/{name}', index=False)
